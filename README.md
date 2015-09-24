@@ -168,13 +168,15 @@ We can query to NOAA databases for bathymetry at 1 minute resultion, but lets do
     atl<- getNOAA.bathy(-75,-50,30,60,resolution=10)
     
 After that's done we can plot some nice 2d and 3d plots (we will cover the details in a later study group)
+
     plot.bathy(atl,
                image = TRUE,
                land = TRUE,
                n=0,
                bpal = list(c(0, max(atl), greys(100)),
                            c(min(atl), 0, blues(100))))
-![Image bathymetry](~/bathy.png)
+
+![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy.jpg?raw=true)
     
         
     wireframe(unclass(atl), drape = TRUE,
@@ -185,7 +187,7 @@ After that's done we can plot some nice 2d and 3d plots (we will cover the detai
               col.regions = c(blues(100),greys(100)),
               col='transparent')
     
-![Image 3d bathymetry](~/bathy3d.png)
+![Image 3d bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy3d.jpg?raw=true)
 
     
     wireframe(unclass(atl), shade = TRUE,
@@ -193,11 +195,11 @@ After that's done we can plot some nice 2d and 3d plots (we will cover the detai
               scales = list(draw=F,arrows=F),
               xlab="",ylab="",zlab="")
     
-![Image shaded 3d bathymetry](~/bathy3dshaded.png)
-    
+![Image shaded 3d bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy3dshaded.jpg?raw=true)
   
 ## Other great resources:
 http://pakillo.github.io/R-GIS-tutorial/#plot
+
 http://www.milanor.net/blog/?p=594
+
 http://www.kevjohnson.org/making-maps-in-r-part-2/
-    
