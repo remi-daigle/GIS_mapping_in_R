@@ -245,14 +245,17 @@ greys &lt;- colorRampPalette(c(grey(0.4),grey(0.99)))
 <pre><code>atl&lt;- getNOAA.bathy(-75,-50,30,60,resolution=10)
 </code></pre>
 
-<p>After that's done we can plot some nice 2d and 3d plots (we will cover the details in a later study group)
-    plot.bathy(atl,
-               image = TRUE,
-               land = TRUE,
-               n=0,
-               bpal = list(c(0, max(atl), greys(100)),
-                           c(min(atl), 0, blues(100))))
-<img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy.png" alt="Image bathymetry"></p>
+<p>After that's done we can plot some nice 2d and 3d plots (we will cover the details in a later study group)</p>
+
+<pre><code>plot.bathy(atl,
+           image = TRUE,
+           land = TRUE,
+           n=0,
+           bpal = list(c(0, max(atl), greys(100)),
+                       c(min(atl), 0, blues(100))))
+</code></pre>
+
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy.jpg?raw=true" alt="Image bathymetry"></p>
 
 <pre><code>wireframe(unclass(atl), drape = TRUE,
           aspect = c(1, 0.1),
@@ -263,7 +266,7 @@ greys &lt;- colorRampPalette(c(grey(0.4),grey(0.99)))
           col='transparent')
 </code></pre>
 
-<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy3d.png" alt="Image 3d bathymetry"></p>
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy3d.jpg?raw=true" alt="Image 3d bathymetry"></p>
 
 <pre><code>wireframe(unclass(atl), shade = TRUE,
           aspect = c(1, 0.1),
@@ -271,14 +274,16 @@ greys &lt;- colorRampPalette(c(grey(0.4),grey(0.99)))
           xlab="",ylab="",zlab="")
 </code></pre>
 
-<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy3dshaded.jpg" alt="Image shaded 3d bathymetry"></p>
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy3dshaded.jpg?raw=true" alt="Image shaded 3d bathymetry"></p>
 
 <h2>
 <a id="other-great-resources" class="anchor" href="#other-great-resources" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other great resources:</h2>
 
-<p><a href="http://pakillo.github.io/R-GIS-tutorial/#plot">http://pakillo.github.io/R-GIS-tutorial/#plot</a>
-<a href="http://www.milanor.net/blog/?p=594">http://www.milanor.net/blog/?p=594</a>
-<a href="http://www.kevjohnson.org/making-maps-in-r-part-2/">http://www.kevjohnson.org/making-maps-in-r-part-2/</a></p>
+<p><a href="http://pakillo.github.io/R-GIS-tutorial/#plot">http://pakillo.github.io/R-GIS-tutorial/#plot</a></p>
+
+<p><a href="http://www.milanor.net/blog/?p=594">http://www.milanor.net/blog/?p=594</a></p>
+
+<p><a href="http://www.kevjohnson.org/making-maps-in-r-part-2/">http://www.kevjohnson.org/making-maps-in-r-part-2/</a></p>
       </section>
     </div>
 
