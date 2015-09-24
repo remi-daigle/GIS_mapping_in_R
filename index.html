@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Intro to GIS mapping in R : Plot your study site!">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Intro to GIS mapping in R</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/remi-daigle/GIS_mapping_in_R">View on GitHub</a>
+
+          <h1 id="project_title">Intro to GIS mapping in R</h1>
+          <h2 id="project_tagline">Plot your study site!</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/remi-daigle/GIS_mapping_in_R/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/remi-daigle/GIS_mapping_in_R/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>
+<a id="motivation" class="anchor" href="#motivation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Motivation</h2>
+
+<p>There are many software solutions that will allow you to make a map. Some of them are free and open source (<em>e.g.</em> <a href="grass.osgeo.org/">GRASS</a>) or not (<em>e.g.</em> <a href="http://www.arcgis.com/features/">ArcGIS</a>). The argument between R and something that isn't free is pretty self explanatory, but why would we want to do our GIS tasks in R over something else like GRASS that was designed for this purpose? My usual answer to that is that I prefer a nice workflow all in R, I like the continuity. I also like leveraging my R programming know-how (e.g. data manipulation, loops, etc) to do complex and/or repeated operations that might take me longer to click through or learn how to automate in some other program.
+Really, you just need to find the right tool for the job, sometimes that will be R, other times it will be a dedicated GIS program. Also, R and GRASS can <a href="http://grasswiki.osgeo.org/wiki/R_statistics">interact</a> providing an intermediate solution. All that being said, it helps to know what R can do when you're choosing your tool.</p>
+
+<h2>
+<a id="load-the-required-packages" class="anchor" href="#load-the-required-packages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Load the required packages</h2>
+
+<pre><code>library(maptools)
+library(rgdal)
+library(raster)
+library(maps)
+library(mapdata)
+library(ggmap)
+library(marmap)
+library(lattice)
+</code></pre>
+
+<h2>
+<a id="getting-your-data-off-your-gps" class="anchor" href="#getting-your-data-off-your-gps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting your data off your GPS</h2>
+
+<p>If your GPS can export to <code>.gpx</code> format, you can read the file directly as lines (i.e. <code>tracks</code>), points (i.e. <code>track_points</code>), and a few other formats you can find in the help for <code>readOGR</code>:</p>
+
+<pre><code>run &lt;- readOGR(dsn="run.gpx",layer="tracks")
+plot(run)
+
+run &lt;- readOGR(dsn="run.gpx",layer="track_points")
+plot(run)
+</code></pre>
+
+<p>If your GPS cannot save in <code>.gpx</code> format, you will have to resort to <a href="http://www.gpsbabel.org/">GPSBabel</a> to convert your file(s) from the proprietary file format to <code>.gpx</code>. Interestingly, to streamline your workflow and make your work reproducible, R can interact with GPSBabel directly through the <a href="http://www.inside-r.org/packages/cran/maptools/docs/readGPS"><code>readGPS()</code></a> function which is in the <code>maptools</code> package</p>
+
+<h2>
+<a id="getting-a-base-map" class="anchor" href="#getting-a-base-map" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting a base map</h2>
+
+<p>There are a few ways to get this type of thing in R, I'll cover many of these in a future lesson, for now let's just use a simple world map from the maptools package:</p>
+
+<pre><code>data(wrld_simpl)
+</code></pre>
+
+<p>Let's plot that to see what we have</p>
+
+<pre><code>plot(wrld_simpl)
+</code></pre>
+
+<p>Or we can 'zoom in' on a particular spot if we provide limits</p>
+
+<pre><code>xlim=c(-130,-60)
+ylim=c(45,80)
+plot(wrld_simpl,xlim=xlim,ylim=ylim)
+</code></pre>
+
+<p>We can also give it some color</p>
+
+<pre><code>plot(wrld_simpl,xlim=xlim,ylim=ylim,col='olivedrab3',bg='lightblue')
+</code></pre>
+
+<p>I know, the map projection is not awesome, we're going to cover that in another future lesson. </p>
+
+<h2>
+<a id="exporting-and-importing" class="anchor" href="#exporting-and-importing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Exporting and importing</h2>
+
+<p>Now that we know how to get a super basic map in R, let's look at how we can export and import data. This will write an ArcGIS compatible shapefile, <code>writeOGR()</code> will actually write to many different formats you just need to find the correct <code>driver</code></p>
+
+<pre><code>writeOGR(wrld_simpl,dsn=getwd(), layer = "world_test", driver = "ESRI Shapefile", overwrite_layer = TRUE)
+</code></pre>
+
+<p>Now we could open <code>world_test.shp</code> in ArcGIS, but we can also import shapefiles back into R, let's use that same file</p>
+
+<pre><code>world_shp &lt;- readOGR(dsn = getwd(),layer = "world_test")
+plot(world_shp)
+</code></pre>
+
+<h2>
+<a id="spatial-data-types-in-r" class="anchor" href="#spatial-data-types-in-r" aria-hidden="true"><span class="octicon octicon-link"></span></a>Spatial data types in R</h2>
+
+<h3>
+<a id="vector-based-points-lines-and-polygons" class="anchor" href="#vector-based-points-lines-and-polygons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Vector based (points, lines, and polygons)</h3>
+
+<p>creating spatial data from scratch in R seems a little convoluted to me, but once you understand the pattern, it gets easier</p>
+
+<h4>
+<a id="spatialpointsdataframe" class="anchor" href="#spatialpointsdataframe" aria-hidden="true"><span class="octicon octicon-link"></span></a>SpatialPointsDataFrame</h4>
+
+<p>let's plot points on Simon Fraser University and University of Toronto</p>
+
+<pre><code>coords &lt;- matrix(c(-122.92,-79.4, 49.277,43.66),ncol=2)
+coords &lt;- coordinates(coords)
+spoints &lt;- SpatialPoints(coords)
+df &lt;- data.frame(location=c("SFU","UofT"))
+spointsdf &lt;- SpatialPointsDataFrame(spoints,df)
+plot(spointsdf,add=T,col=c('red','blue'),pch=16)
+</code></pre>
+
+<h4>
+<a id="spatiallinesdataframe" class="anchor" href="#spatiallinesdataframe" aria-hidden="true"><span class="octicon octicon-link"></span></a>SpatialLinesDataFrame</h4>
+
+<p>let's plot the borders of the province of Saskatchewan because they're easy to draw (but not to spell!)</p>
+
+<pre><code>coords &lt;- matrix(c(-110,-102,-102,-110,-110,60,60,49,49,60),ncol=2)
+l &lt;- Line(coords)
+ls &lt;- Lines(list(l),ID="1")
+sls &lt;- SpatialLines(list(ls))
+df &lt;- data.frame(province="Saskatchewan")
+sldf &lt;- SpatialLinesDataFrame(sls,df)
+plot(sldf,add=T,col='black') 
+</code></pre>
+
+<h4>
+<a id="spatialpolygonsdataframe" class="anchor" href="#spatialpolygonsdataframe" aria-hidden="true"><span class="octicon octicon-link"></span></a>SpatialPolygonsDataFrame</h4>
+
+<p>let's plot the province of Saskatchewan because it's easy to draw (but not to spell!)</p>
+
+<pre><code>coords &lt;- matrix(c(-110,-102,-102,-110,-110,60,60,49,49,60),ncol=2)
+p &lt;- Polygon(coords)
+ps &lt;- Polygons(list(p),ID="1")
+sps &lt;- SpatialPolygons(list(ps))
+df &lt;- data.frame(province="Saskatchewan")
+spdf &lt;- SpatialPolygonsDataFrame(sps,df)
+plot(spdf,add=T,col='red')  
+</code></pre>
+
+<h2>
+<a id="making-nicer-maps" class="anchor" href="#making-nicer-maps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Making nicer maps</h2>
+
+<pre><code>coords &lt;- matrix(c(-61,-62,-62,-61,-61,46,46,45,45,46),ncol=2)
+p &lt;- Polygon(coords)
+ps &lt;- Polygons(list(p),ID="1")
+sps &lt;- SpatialPolygons(list(ps))
+df &lt;- data.frame(province="Saskatchewan")
+spdf &lt;- SpatialPolygonsDataFrame(sps,df)
+plot(spdf,add=T,col='red') 
+</code></pre>
+
+<h5>
+<a id="the-raster-package-for-basic-maps-that-interact-well-with-spatial-objects-we-used-above-unlike-many-other-packages-this-method-plays-nice-with-other-spatial-object-from-the-sp-package-and-can-be-use-proper-projections-etc" class="anchor" href="#the-raster-package-for-basic-maps-that-interact-well-with-spatial-objects-we-used-above-unlike-many-other-packages-this-method-plays-nice-with-other-spatial-object-from-the-sp-package-and-can-be-use-proper-projections-etc" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>raster</code> package for basic maps that interact well with spatial objects we used above, unlike many other packages, this method 'plays nice' with other spatial object from the <code>sp</code> package and can be use proper projections etc.</h5>
+
+<p>We can download polygons for Canada from <a href="http://gadm.org/about">GADM</a> (amongst other sources) with the country code <code>"CAN"</code>, and level=1 indicates provinces, <code>0</code> would be the whole country.</p>
+
+<pre><code>Canada &lt;- getData('GADM', country="CAN", level=1)
+plot(Canada)
+</code></pre>
+
+<p>We can manipulate this <code>SpatialPolygonDataFrame</code> by looking at what is inside its dataframe</p>
+
+<pre><code>Canada@data
+</code></pre>
+
+<p>We can see that the names of the provinces are in <code>Canada@data$NAME_1</code>, so lets use that to extract provinces</p>
+
+<pre><code>NS &lt;- Canada[Canada@data$NAME_1=="Nova Scotia",]
+plot(NS,col="blue")
+
+NB &lt;- Canada[Canada@data$NAME_1=="New Brunswick",]
+plot(NB,col="yellow",add=TRUE)
+
+PEI &lt;- Canada[Canada@data$NAME_1=="Prince Edward Island",]
+plot(PEI,col="red",add=TRUE)
+</code></pre>
+
+<h5>
+<a id="the-maps-and-mapdata-packages-for-basic-maps" class="anchor" href="#the-maps-and-mapdata-packages-for-basic-maps" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>maps</code> and <code>mapdata</code> packages for basic maps:</h5>
+
+<p>Coordinates which highlight the scale of the map</p>
+
+<pre><code>Lat.lim=c(42.5,49)
+Long.lim=c(-69,-59)
+</code></pre>
+
+<p>Locations of interest - these examples correspond to the tips of PEI and the provinces best city####</p>
+
+<pre><code>Site.Longs=c(-61.9,-64,-63.8)
+Site.Lats=c(46.5,47.2,46.4)
+Site.Names=c("Souris","Tignish","Summerside")
+</code></pre>
+
+<p>Make the map. Here you can play with the fill colour (now grey) and a few other tweaks</p>
+
+<pre><code>map("worldHires", xlim=Long.lim, ylim=Lat.lim, col="grey", fill=TRUE, resolution=0);map.axes();
+map.scale(ratio=FALSE) # do you want a scale?
+
+points(Site.Longs,  Site.Lats,pch=19) #Add points if you have data in Site.Longs and Site.lats
+points(-61.6,47.7,pch = 8 ) # this will add point a single point (*) to the Maggies 
+text(Site.Longs,Site.Lats,labels=Site.Names,pos=4, offset=0.3) # add labels
+text(-61.6,47.7,labels="Ilse de Madeleine",pos=4, offset=0.3) # add label to an individual plot
+</code></pre>
+
+<h5>
+<a id="the-ggmap-package-for-google-maps" class="anchor" href="#the-ggmap-package-for-google-maps" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>ggmap</code> package for Google Maps:</h5>
+
+<p>This package is great particularly if you are familiar with the <code>ggplot2</code> plotting grammar. You may also come across the <code>RgoogleMaps</code> package, but I do not recommend using it because it seems to have a grammar unique to that package (i.e. not compatible with base plotting or ggplot2) and has strange scaling behaviour.</p>
+
+<pre><code>google &lt;- get_map(location = c(-64.4,45.08), zoom = 4, maptype = "satellite")
+p &lt;- ggmap(google)
+p + geom_point(aes(x=c(-64.36,-64.4),y=c(45.08,45.1)),colour='yellow',size=3)
+</code></pre>
+
+<h5>
+<a id="the-marmap-package-for-bathymetry" class="anchor" href="#the-marmap-package-for-bathymetry" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>marmap</code> package for bathymetry:</h5>
+
+<p>If you're an oceanographer like myself, you will love this package! It can query and plot NOAA's bathymetry databases</p>
+
+<p>Let's define some colors for sea and land</p>
+
+<pre><code>blues &lt;- colorRampPalette(c("darkblue", "cyan"))
+greys &lt;- colorRampPalette(c(grey(0.4),grey(0.99)))
+</code></pre>
+
+<p>We can query to NOAA databases for bathymetry at 1 minute resultion, but lets do 10 to keep download speeds reasonable.</p>
+
+<pre><code>atl&lt;- getNOAA.bathy(-75,-50,30,60,resolution=10)
+</code></pre>
+
+<p>After that's done we can plot some nice 2d and 3d plots (we will cover the details in a later study group)
+    plot.bathy(atl,
+               image = TRUE,
+               land = TRUE,
+               n=0,
+               bpal = list(c(0, max(atl), greys(100)),
+                           c(min(atl), 0, blues(100))))
+<img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy.png" alt="Image bathymetry"></p>
+
+<pre><code>wireframe(unclass(atl), drape = TRUE,
+          aspect = c(1, 0.1),
+          scales = list(draw=F,arrows=F),
+          xlab="",ylab="",zlab="",
+          at=c(min(atl)/100*(99:0),max(atl)/100*(1:99)),
+          col.regions = c(blues(100),greys(100)),
+          col='transparent')
+</code></pre>
+
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy3d.png" alt="Image 3d bathymetry"></p>
+
+<pre><code>wireframe(unclass(atl), shade = TRUE,
+          aspect = c(1, 0.1),
+          scales = list(draw=F,arrows=F),
+          xlab="",ylab="",zlab="")
+</code></pre>
+
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/bathy3dshaded.jpg" alt="Image shaded 3d bathymetry"></p>
+
+<h2>
+<a id="other-great-resources" class="anchor" href="#other-great-resources" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other great resources:</h2>
+
+<p><a href="http://pakillo.github.io/R-GIS-tutorial/#plot">http://pakillo.github.io/R-GIS-tutorial/#plot</a>
+<a href="http://www.milanor.net/blog/?p=594">http://www.milanor.net/blog/?p=594</a>
+<a href="http://www.kevjohnson.org/making-maps-in-r-part-2/">http://www.kevjohnson.org/making-maps-in-r-part-2/</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Intro to GIS mapping in R maintained by <a href="https://github.com/remi-daigle">remi-daigle</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
