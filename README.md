@@ -2,10 +2,12 @@
 There are many software solutions that will allow you to make a map. Some of them are free and open source (_e.g._ [GRASS](grass.osgeo.org/)) or not (_e.g._ [ArcGIS](http://www.arcgis.com/features/)). The argument between R and something that isn't free is pretty self explanatory, but why would we want to do our GIS tasks in R over something else like GRASS that was designed for this purpose? My usual answer to that is that I prefer a nice workflow all in R, I like the continuity. I also like leveraging my R programming know-how (e.g. data manipulation, loops, etc) to do complex and/or repeated operations that might take me longer to click through or learn how to automate in some other program.
 Really, you just need to find the right tool for the job, sometimes that will be R, other times it will be a dedicated GIS program. Also, R and GRASS can [interact](http://grasswiki.osgeo.org/wiki/R_statistics) providing an intermediate solution. All that being said, it helps to know what R can do when you're choosing your tool.
 
-## Load the required packages
+## Load the required packages (also `install.packages()` if necessary)
 
     library(maptools)
     library(rgdal)
+    
+### plus these packages if you want to go through the examples at the bottom
     library(raster)
     library(maps)
     library(mapdata)
@@ -14,7 +16,7 @@ Really, you just need to find the right tool for the job, sometimes that will be
     library(lattice)
 
 ## Getting your data off your GPS
-If your GPS can export to `.gpx` format, you can read the file directly as lines (i.e. `tracks`), points (i.e. `track_points`), and a few other formats you can find in the help for `readOGR`:
+If your GPS can export to `.gpx` format, you can read the file directly as lines (i.e. `tracks`), points (i.e. `track_points`), and a few other formats you can find in the help for `readOGR`. To download and example `.gpx`, click [here](http://www.wolferonline.de/uploads/run.gpx)
 
     run <- readOGR(dsn="run.gpx",layer="tracks")
     plot(run)
@@ -43,6 +45,8 @@ Or we can 'zoom in' on a particular spot if we provide limits
 We can also give it some color
     
     plot(wrld_simpl,xlim=xlim,ylim=ylim,col='olivedrab3',bg='lightblue')
+
+![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/Canada.png?raw=true)
     
 I know, the map projection is not awesome, we're going to cover that in another future lesson. 
     
@@ -70,6 +74,8 @@ let's plot points on Simon Fraser University and University of Toronto
     spointsdf <- SpatialPointsDataFrame(spoints,df)
     plot(spointsdf,add=T,col=c('red','blue'),pch=16)
     
+![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/worldwithpoints.png?raw=true)
+    
 #### SpatialLinesDataFrame
 let's plot the borders of the province of Saskatchewan because they're easy to draw (but not to spell!)
     
@@ -79,7 +85,10 @@ let's plot the borders of the province of Saskatchewan because they're easy to d
     sls <- SpatialLines(list(ls))
     df <- data.frame(province="Saskatchewan")
     sldf <- SpatialLinesDataFrame(sls,df)
-    plot(sldf,add=T,col='black') 
+    plot(sldf,add=T,col='black')
+    
+![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/worldwithlines.png?raw=true)
+
   
 #### SpatialPolygonsDataFrame
 let's plot the province of Saskatchewan because it's easy to draw (but not to spell!)
@@ -91,23 +100,20 @@ let's plot the province of Saskatchewan because it's easy to draw (but not to sp
     df <- data.frame(province="Saskatchewan")
     spdf <- SpatialPolygonsDataFrame(sps,df)
     plot(spdf,add=T,col='red')  
+
+![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/worldwithpoly.png?raw=true)
+
     
 ## Making nicer maps
-    
-    coords <- matrix(c(-61,-62,-62,-61,-61,46,46,45,45,46),ncol=2)
-    p <- Polygon(coords)
-    ps <- Polygons(list(p),ID="1")
-    sps <- SpatialPolygons(list(ps))
-    df <- data.frame(province="Saskatchewan")
-    spdf <- SpatialPolygonsDataFrame(sps,df)
-    plot(spdf,add=T,col='red') 
     
 ##### The `raster` package for basic maps that interact well with spatial objects we used above, unlike many other packages, this method 'plays nice' with other spatial object from the `sp` package and can be use proper projections etc.
 We can download polygons for Canada from [GADM](http://gadm.org/about) (amongst other sources) with the country code `"CAN"`, and level=1 indicates provinces, `0` would be the whole country.
     
     Canada <- getData('GADM', country="CAN", level=1)
     plot(Canada)
-    
+
+![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/CanadaGADM.png?raw=true)
+
 We can manipulate this `SpatialPolygonDataFrame` by looking at what is inside its dataframe
     
     Canada@data
@@ -122,8 +128,19 @@ We can see that the names of the provinces are in `Canada@data$NAME_1`, so lets 
     
     PEI <- Canada[Canada@data$NAME_1=="Prince Edward Island",]
     plot(PEI,col="red",add=TRUE)
+
+let's plot points in Moncton, Halifax and Charlottetown
     
-    
+    coords <- matrix(cbind(lon=c(-64.77,-63.57,-63.14),lat=c(46.13,44.65,46.24)),ncol=2)
+    coords <- coordinates(coords)
+    spoints <- SpatialPoints(coords)
+    df <- data.frame(location=c("Moncton","Halifax","Charlottetown"),pop=c(138644,390095,34562))
+    spointsdf <- SpatialPointsDataFrame(spoints,df)
+    scalefactor <- sqrt(spointsdf@data$pop)/sqrt(max(spointsdf@data$pop))
+    plot(spointsdf,add=TRUE,col='black',pch=16,cex=scalefactor*10)    
+
+![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/maritimes.png?raw=true)
+
 ##### The `maps` and `mapdata` packages for basic maps:
 
     
@@ -148,12 +165,17 @@ Make the map. Here you can play with the fill colour (now grey) and a few other 
     text(Site.Longs,Site.Lats,labels=Site.Names,pos=4, offset=0.3) # add labels
     text(-61.6,47.7,labels="Ilse de Madeleine",pos=4, offset=0.3) # add label to an individual plot
     
+![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/maritimes2.png?raw=true)
+    
 ##### The `ggmap` package for Google Maps:  
 This package is great particularly if you are familiar with the `ggplot2` plotting grammar. You may also come across the `RgoogleMaps` package, but I do not recommend using it because it seems to have a grammar unique to that package (i.e. not compatible with base plotting or ggplot2) and has strange scaling behaviour.
     
-    google <- get_map(location = c(-64.4,45.08), zoom = 4, maptype = "satellite")
+    google <- get_map(location = c(-64.4,45.08), zoom = 10, maptype = "satellite")
     p <- ggmap(google)
     p + geom_point(aes(x=c(-64.36,-64.4),y=c(45.08,45.1)),colour='yellow',size=3)
+
+![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/google.png?raw=true)
+
 
 ##### The `marmap` package for bathymetry:
 If you're an oceanographer like myself, you will love this package! It can query and plot NOAA's bathymetry databases
