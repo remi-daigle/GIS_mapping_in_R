@@ -50,6 +50,10 @@ We can also give it some color
 ![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/Canada.png?raw=true)
     
 I know, the map projection is not awesome, we're going to cover that in another future lesson. 
+
+> **Challenge problem 1**
+> Can you zoom in to your home town?
+>
     
 ## Exporting and importing
 Now that we know how to get a super basic map in R, let's look at how we can export and import data. This will write an ArcGIS compatible shapefile, `writeOGR()` will actually write to many different formats you just need to find the correct `driver`
@@ -104,10 +108,13 @@ let's plot the province of Saskatchewan because it's easy to draw (but not to sp
 
 ![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/worldwithpoly.png?raw=true)
 
+> **Challenge problem 2**
+> Can you plot a point on your home town?
+>
     
 ## Making nicer maps
     
-##### The `raster` package for basic maps that interact well with spatial objects we used above, unlike many other packages, this method 'plays nice' with other spatial object from the `sp` package and can be use proper projections etc.
+The `raster` package for basic maps that interact well with spatial objects we used above, unlike many other packages, this method 'plays nice' with other spatial object from the `sp` package and can be use proper projections etc.
 We can download polygons for Canada from [GADM](http://gadm.org/about) (amongst other sources) with the country code `"CAN"`, and level=1 indicates provinces, `0` would be the whole country.
     
     Canada <- getData('GADM', country="CAN", level=1)
@@ -167,6 +174,10 @@ Make the map. Here you can play with the fill colour (now grey) and a few other 
     text(-61.6,47.7,labels="Ilse de Madeleine",pos=4, offset=0.3) # add label to an individual plot
     
 ![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/maritimes2.png?raw=true)
+
+> **Challenge problem 1**
+> Can you label your home town?
+>
     
 ##### The `ggmap` package for Google Maps:  
 This package is great particularly if you are familiar with the `ggplot2` plotting grammar. You may also come across the `RgoogleMaps` package, but I do not recommend using it because it seems to have a grammar unique to that package (i.e. not compatible with base plotting or ggplot2) and has strange scaling behaviour.
