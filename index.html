@@ -97,6 +97,11 @@ plot(wrld_simpl,xlim=xlim,ylim=ylim)
 
 <p>I know, the map projection is not awesome, we're going to cover that in another future lesson. </p>
 
+<blockquote>
+<p><strong>Challenge problem 1</strong>
+Can you zoom in to your home town?</p>
+</blockquote>
+
 <h2>
 <a id="exporting-and-importing" class="anchor" href="#exporting-and-importing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Exporting and importing</h2>
 
@@ -166,13 +171,16 @@ plot(spdf,add=T,col='red')
 
 <p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/worldwithpoly.png?raw=true" alt="Image bathymetry"></p>
 
+<blockquote>
+<p><strong>Challenge problem 2</strong>
+Can you plot a point on your home town?</p>
+</blockquote>
+
 <h2>
 <a id="making-nicer-maps" class="anchor" href="#making-nicer-maps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Making nicer maps</h2>
 
-<h5>
-<a id="the-raster-package-for-basic-maps-that-interact-well-with-spatial-objects-we-used-above-unlike-many-other-packages-this-method-plays-nice-with-other-spatial-object-from-the-sp-package-and-can-be-use-proper-projections-etc" class="anchor" href="#the-raster-package-for-basic-maps-that-interact-well-with-spatial-objects-we-used-above-unlike-many-other-packages-this-method-plays-nice-with-other-spatial-object-from-the-sp-package-and-can-be-use-proper-projections-etc" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>raster</code> package for basic maps that interact well with spatial objects we used above, unlike many other packages, this method 'plays nice' with other spatial object from the <code>sp</code> package and can be use proper projections etc.</h5>
-
-<p>We can download polygons for Canada from <a href="http://gadm.org/about">GADM</a> (amongst other sources) with the country code <code>"CAN"</code>, and level=1 indicates provinces, <code>0</code> would be the whole country.</p>
+<p>The <code>raster</code> package for basic maps that interact well with spatial objects we used above, unlike many other packages, this method 'plays nice' with other spatial object from the <code>sp</code> package and can be use proper projections etc.
+We can download polygons for Canada from <a href="http://gadm.org/about">GADM</a> (amongst other sources) with the country code <code>"CAN"</code>, and level=1 indicates provinces, <code>0</code> would be the whole country.</p>
 
 <pre><code>Canada &lt;- getData('GADM', country="CAN", level=1)
 plot(Canada)
@@ -238,6 +246,11 @@ text(-61.6,47.7,labels="Ilse de Madeleine",pos=4, offset=0.3) # add label to an 
 </code></pre>
 
 <p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/maritimes2.png?raw=true" alt="Image bathymetry"></p>
+
+<blockquote>
+<p><strong>Challenge problem 1</strong>
+Can you label your home town?</p>
+</blockquote>
 
 <h5>
 <a id="the-ggmap-package-for-google-maps" class="anchor" href="#the-ggmap-package-for-google-maps" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>ggmap</code> package for Google Maps:</h5>
