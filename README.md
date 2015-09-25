@@ -52,6 +52,7 @@ We can also give it some color
 I know, the map projection is not awesome, we're going to cover that in another future lesson. 
 
 > **Challenge problem 1**
+>
 > Can you zoom in to your home town?
 >
     
@@ -109,6 +110,7 @@ let's plot the province of Saskatchewan because it's easy to draw (but not to sp
 ![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/worldwithpoly.png?raw=true)
 
 > **Challenge problem 2**
+>
 > Can you plot a point on your home town?
 >
     
@@ -175,7 +177,8 @@ Make the map. Here you can play with the fill colour (now grey) and a few other 
     
 ![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/maritimes2.png?raw=true)
 
-> **Challenge problem 1**
+> **Challenge problem 3**
+>
 > Can you label your home town?
 >
     
