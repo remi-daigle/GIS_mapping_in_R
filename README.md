@@ -9,6 +9,7 @@ Really, you just need to find the right tool for the job, sometimes that will be
     library(rgdal)
     
 plus these packages if you want to go through the examples at the bottom
+
     library(raster)
     library(maps)
     library(mapdata)
