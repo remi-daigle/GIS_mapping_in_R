@@ -40,20 +40,24 @@ Really, you just need to find the right tool for the job, sometimes that will be
 <h2>
 <a id="load-the-required-packages" class="anchor" href="#load-the-required-packages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Load the required packages</h2>
 
+<p>(also <code>install.packages()</code> if necessary)</p>
+
 <pre><code>library(maptools)
 library(rgdal)
-library(raster)
-library(maps)
-library(mapdata)
-library(ggmap)
-library(marmap)
-library(lattice)
 </code></pre>
+
+<p>plus these packages if you want to go through the examples at the bottom
+    library(raster)
+    library(maps)
+    library(mapdata)
+    library(ggmap)
+    library(marmap)
+    library(lattice)</p>
 
 <h2>
 <a id="getting-your-data-off-your-gps" class="anchor" href="#getting-your-data-off-your-gps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting your data off your GPS</h2>
 
-<p>If your GPS can export to <code>.gpx</code> format, you can read the file directly as lines (i.e. <code>tracks</code>), points (i.e. <code>track_points</code>), and a few other formats you can find in the help for <code>readOGR</code>:</p>
+<p>If your GPS can export to <code>.gpx</code> format, you can read the file directly as lines (i.e. <code>tracks</code>), points (i.e. <code>track_points</code>), and a few other formats you can find in the help for <code>readOGR</code>. To download and example <code>.gpx</code>, click <a href="http://www.wolferonline.de/uploads/run.gpx">here</a></p>
 
 <pre><code>run &lt;- readOGR(dsn="run.gpx",layer="tracks")
 plot(run)
@@ -88,6 +92,8 @@ plot(wrld_simpl,xlim=xlim,ylim=ylim)
 
 <pre><code>plot(wrld_simpl,xlim=xlim,ylim=ylim,col='olivedrab3',bg='lightblue')
 </code></pre>
+
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/Canada.png?raw=true" alt="Image bathymetry"></p>
 
 <p>I know, the map projection is not awesome, we're going to cover that in another future lesson. </p>
 
@@ -126,6 +132,8 @@ spointsdf &lt;- SpatialPointsDataFrame(spoints,df)
 plot(spointsdf,add=T,col=c('red','blue'),pch=16)
 </code></pre>
 
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/worldwithpoints.png?raw=true" alt="Image bathymetry"></p>
+
 <h4>
 <a id="spatiallinesdataframe" class="anchor" href="#spatiallinesdataframe" aria-hidden="true"><span class="octicon octicon-link"></span></a>SpatialLinesDataFrame</h4>
 
@@ -137,8 +145,10 @@ ls &lt;- Lines(list(l),ID="1")
 sls &lt;- SpatialLines(list(ls))
 df &lt;- data.frame(province="Saskatchewan")
 sldf &lt;- SpatialLinesDataFrame(sls,df)
-plot(sldf,add=T,col='black') 
+plot(sldf,add=T,col='black')
 </code></pre>
+
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/worldwithlines.png?raw=true" alt="Image bathymetry"></p>
 
 <h4>
 <a id="spatialpolygonsdataframe" class="anchor" href="#spatialpolygonsdataframe" aria-hidden="true"><span class="octicon octicon-link"></span></a>SpatialPolygonsDataFrame</h4>
@@ -154,17 +164,10 @@ spdf &lt;- SpatialPolygonsDataFrame(sps,df)
 plot(spdf,add=T,col='red')  
 </code></pre>
 
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/worldwithpoly.png?raw=true" alt="Image bathymetry"></p>
+
 <h2>
 <a id="making-nicer-maps" class="anchor" href="#making-nicer-maps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Making nicer maps</h2>
-
-<pre><code>coords &lt;- matrix(c(-61,-62,-62,-61,-61,46,46,45,45,46),ncol=2)
-p &lt;- Polygon(coords)
-ps &lt;- Polygons(list(p),ID="1")
-sps &lt;- SpatialPolygons(list(ps))
-df &lt;- data.frame(province="Saskatchewan")
-spdf &lt;- SpatialPolygonsDataFrame(sps,df)
-plot(spdf,add=T,col='red') 
-</code></pre>
 
 <h5>
 <a id="the-raster-package-for-basic-maps-that-interact-well-with-spatial-objects-we-used-above-unlike-many-other-packages-this-method-plays-nice-with-other-spatial-object-from-the-sp-package-and-can-be-use-proper-projections-etc" class="anchor" href="#the-raster-package-for-basic-maps-that-interact-well-with-spatial-objects-we-used-above-unlike-many-other-packages-this-method-plays-nice-with-other-spatial-object-from-the-sp-package-and-can-be-use-proper-projections-etc" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>raster</code> package for basic maps that interact well with spatial objects we used above, unlike many other packages, this method 'plays nice' with other spatial object from the <code>sp</code> package and can be use proper projections etc.</h5>
@@ -174,6 +177,8 @@ plot(spdf,add=T,col='red')
 <pre><code>Canada &lt;- getData('GADM', country="CAN", level=1)
 plot(Canada)
 </code></pre>
+
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/CanadaGADM.png?raw=true" alt="Image bathymetry"></p>
 
 <p>We can manipulate this <code>SpatialPolygonDataFrame</code> by looking at what is inside its dataframe</p>
 
@@ -191,6 +196,19 @@ plot(NB,col="yellow",add=TRUE)
 PEI &lt;- Canada[Canada@data$NAME_1=="Prince Edward Island",]
 plot(PEI,col="red",add=TRUE)
 </code></pre>
+
+<p>let's plot points in Moncton, Halifax and Charlottetown</p>
+
+<pre><code>coords &lt;- matrix(cbind(lon=c(-64.77,-63.57,-63.14),lat=c(46.13,44.65,46.24)),ncol=2)
+coords &lt;- coordinates(coords)
+spoints &lt;- SpatialPoints(coords)
+df &lt;- data.frame(location=c("Moncton","Halifax","Charlottetown"),pop=c(138644,390095,34562))
+spointsdf &lt;- SpatialPointsDataFrame(spoints,df)
+scalefactor &lt;- sqrt(spointsdf@data$pop)/sqrt(max(spointsdf@data$pop))
+plot(spointsdf,add=TRUE,col='black',pch=16,cex=scalefactor*10)    
+</code></pre>
+
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/maritimes.png?raw=true" alt="Image bathymetry"></p>
 
 <h5>
 <a id="the-maps-and-mapdata-packages-for-basic-maps" class="anchor" href="#the-maps-and-mapdata-packages-for-basic-maps" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>maps</code> and <code>mapdata</code> packages for basic maps:</h5>
@@ -219,15 +237,19 @@ text(Site.Longs,Site.Lats,labels=Site.Names,pos=4, offset=0.3) # add labels
 text(-61.6,47.7,labels="Ilse de Madeleine",pos=4, offset=0.3) # add label to an individual plot
 </code></pre>
 
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/maritimes2.png?raw=true" alt="Image bathymetry"></p>
+
 <h5>
 <a id="the-ggmap-package-for-google-maps" class="anchor" href="#the-ggmap-package-for-google-maps" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>ggmap</code> package for Google Maps:</h5>
 
 <p>This package is great particularly if you are familiar with the <code>ggplot2</code> plotting grammar. You may also come across the <code>RgoogleMaps</code> package, but I do not recommend using it because it seems to have a grammar unique to that package (i.e. not compatible with base plotting or ggplot2) and has strange scaling behaviour.</p>
 
-<pre><code>google &lt;- get_map(location = c(-64.4,45.08), zoom = 4, maptype = "satellite")
+<pre><code>google &lt;- get_map(location = c(-64.4,45.08), zoom = 10, maptype = "satellite")
 p &lt;- ggmap(google)
 p + geom_point(aes(x=c(-64.36,-64.4),y=c(45.08,45.1)),colour='yellow',size=3)
 </code></pre>
+
+<p><img src="https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/google.png?raw=true" alt="Image bathymetry"></p>
 
 <h5>
 <a id="the-marmap-package-for-bathymetry" class="anchor" href="#the-marmap-package-for-bathymetry" aria-hidden="true"><span class="octicon octicon-link"></span></a>The <code>marmap</code> package for bathymetry:</h5>
@@ -295,7 +317,17 @@ greys &lt;- colorRampPalette(c(grey(0.4),grey(0.99)))
       </footer>
     </div>
 
-    
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-50638009-6");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
 
   </body>
 </html>
