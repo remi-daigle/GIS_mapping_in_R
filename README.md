@@ -2,12 +2,13 @@
 There are many software solutions that will allow you to make a map. Some of them are free and open source (_e.g._ [GRASS](grass.osgeo.org/)) or not (_e.g._ [ArcGIS](http://www.arcgis.com/features/)). The argument between R and something that isn't free is pretty self explanatory, but why would we want to do our GIS tasks in R over something else like GRASS that was designed for this purpose? My usual answer to that is that I prefer a nice workflow all in R, I like the continuity. I also like leveraging my R programming know-how (e.g. data manipulation, loops, etc) to do complex and/or repeated operations that might take me longer to click through or learn how to automate in some other program.
 Really, you just need to find the right tool for the job, sometimes that will be R, other times it will be a dedicated GIS program. Also, R and GRASS can [interact](http://grasswiki.osgeo.org/wiki/R_statistics) providing an intermediate solution. All that being said, it helps to know what R can do when you're choosing your tool.
 
-## Load the required packages (also `install.packages()` if necessary)
+## Load the required packages 
+(also `install.packages()` if necessary)
 
     library(maptools)
     library(rgdal)
     
-### plus these packages if you want to go through the examples at the bottom
+plus these packages if you want to go through the examples at the bottom
     library(raster)
     library(maps)
     library(mapdata)
