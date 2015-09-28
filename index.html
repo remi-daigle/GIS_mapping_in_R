@@ -194,18 +194,18 @@ plot(Canada)
 
 <p>We can manipulate this <code>SpatialPolygonDataFrame</code> by looking at what is inside its dataframe</p>
 
-<pre><code>Canada@data
+<pre><code>Canada
 </code></pre>
 
-<p>We can see that the names of the provinces are in <code>Canada@data$NAME_1</code>, so lets use that to extract provinces</p>
+<p>We can see that the names of the provinces are in <code>Canada$NAME_1</code>, so lets use that to extract provinces</p>
 
-<pre><code>NS &lt;- Canada[Canada@data$NAME_1=="Nova Scotia",]
+<pre><code>NS &lt;- Canada[Canada$NAME_1=="Nova Scotia",]
 plot(NS,col="blue")
 
-NB &lt;- Canada[Canada@data$NAME_1=="New Brunswick",]
+NB &lt;- Canada[Canada$NAME_1=="New Brunswick",]
 plot(NB,col="yellow",add=TRUE)
 
-PEI &lt;- Canada[Canada@data$NAME_1=="Prince Edward Island",]
+PEI &lt;- Canada[Canada$NAME_1=="Prince Edward Island",]
 plot(PEI,col="red",add=TRUE)
 </code></pre>
 
@@ -216,7 +216,7 @@ coords &lt;- coordinates(coords)
 spoints &lt;- SpatialPoints(coords)
 df &lt;- data.frame(location=c("Moncton","Halifax","Charlottetown"),pop=c(138644,390095,34562))
 spointsdf &lt;- SpatialPointsDataFrame(spoints,df)
-scalefactor &lt;- sqrt(spointsdf@data$pop)/sqrt(max(spointsdf@data$pop))
+scalefactor &lt;- sqrt(spointsdf$pop)/sqrt(max(spointsdf$pop))
 plot(spointsdf,add=TRUE,col='black',pch=16,cex=scalefactor*10)    
 </code></pre>
 
