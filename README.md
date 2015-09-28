@@ -126,17 +126,17 @@ We can download polygons for Canada from [GADM](http://gadm.org/about) (amongst 
 
 We can manipulate this `SpatialPolygonDataFrame` by looking at what is inside its dataframe
     
-    Canada@data
+    Canada
 
-We can see that the names of the provinces are in `Canada@data$NAME_1`, so lets use that to extract provinces
+We can see that the names of the provinces are in `Canada$NAME_1`, so lets use that to extract provinces
 
-    NS <- Canada[Canada@data$NAME_1=="Nova Scotia",]
+    NS <- Canada[Canada$NAME_1=="Nova Scotia",]
     plot(NS,col="blue")
     
-    NB <- Canada[Canada@data$NAME_1=="New Brunswick",]
+    NB <- Canada[Canada$NAME_1=="New Brunswick",]
     plot(NB,col="yellow",add=TRUE)
     
-    PEI <- Canada[Canada@data$NAME_1=="Prince Edward Island",]
+    PEI <- Canada[Canada$NAME_1=="Prince Edward Island",]
     plot(PEI,col="red",add=TRUE)
 
 let's plot points in Moncton, Halifax and Charlottetown
@@ -146,7 +146,7 @@ let's plot points in Moncton, Halifax and Charlottetown
     spoints <- SpatialPoints(coords)
     df <- data.frame(location=c("Moncton","Halifax","Charlottetown"),pop=c(138644,390095,34562))
     spointsdf <- SpatialPointsDataFrame(spoints,df)
-    scalefactor <- sqrt(spointsdf@data$pop)/sqrt(max(spointsdf@data$pop))
+    scalefactor <- sqrt(spointsdf$pop)/sqrt(max(spointsdf$pop))
     plot(spointsdf,add=TRUE,col='black',pch=16,cex=scalefactor*10)    
 
 ![Image bathymetry](https://github.com/remi-daigle/GIS_mapping_in_R/blob/master/maritimes.png?raw=true)
